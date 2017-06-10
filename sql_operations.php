@@ -6,61 +6,6 @@
  $dbname = "xlei_test4";
  */
  
- /**
-  * first tier: database
-  */
-// function getDataFromDB($page, $servername, $username, $password, $dbname) {
-	// //Connect to a MySQL server
-	// $mysqli = new mysqli($servername, $username, $password, $dbname);
-	// if (mysqli_connect_errno()) {
-		// printf("Connect failed: %s\n", mysqli_connect_error());
-		//         exit;
-	// }
-	// //Create a prepared statement for pulling all entries from a page
-	// if ($stmt = $mysqli -> prepare('SELECT title, entry FROM entries WHERE page=?')) {
-		// //Create a multi-dimensional array to store
-		// //the information from each entry
-		// $entries = array();
-		// ////Bind the passed parameter to the query, retrieve the data, and place
-		// //it into the array $entries for later use
-		// $stmt -> bind_param("s", $page);
-		// //s -> type string
-		// $stmt -> execute();
-		// $stmt -> bind_result($title, $entry);
-		// while ($stmt -> fetch()) {
-			// $entries[] = array('title' => $title, 'entry' => $entry);
-		// }
-		// //Destroy the result set and free the memory used for it
-		// $stmt -> close();
-	// }
-	// //Close the connection
-	// $mysqli -> close();
-// 
-	// return $entries;
-// }
-// 
-// function example($lan, $servername = "localhost", $username = "xlei", $password = "P123fTlS9n*", $dbname = "xlei_project") {
-	// //Connect to a MySQL server
-	// $mysqli = new mysqli($servername, $username, $password, $dbname);
-	// if (mysqli_connect_errno()) {
-		// printf("Connect failed: %s\n", mysqli_connect_error());
-		//         exit;
-	// }
-	// //insert
-	// $stmt = $mysqli -> prepare('INSERT INTO language VALUE (?)');
-	// $stmt -> bind_param("s", $lan);
-	// //s -> type string
-	// $stmt -> execute();
-// 
-	// printf("%d Row inserted.\n", $stmt -> affected_rows);
-// 
-	// //Destroy the result set and free the memory used for it
-	// $stmt -> close();
-// 
-	// //Close the connection
-	// $mysqli -> close();
-// }
-
 function insertIntoTabel($data, $table, $servername = "localhost", $username = "xlei", $password = "P123fTlS9n*", $dbname = "xlei_project") {
 	//Connect to a MySQL server
 	$mysqli = new mysqli($servername, $username, $password, $dbname);
@@ -84,7 +29,6 @@ function insertIntoTabel($data, $table, $servername = "localhost", $username = "
 		}
 	}
 	$stmt = $mysqli -> prepare('INSERT INTO ' . $table . ' VALUES (' . $str_of_question_mark . ')');
-	echo 'INSERT INTO ' . $table . ' VALUES (' . $str_of_question_mark . ')';
 
 	//bind parameters to each table
 	if ($table == 'language') {
@@ -119,7 +63,6 @@ function insertIntoTabel($data, $table, $servername = "localhost", $username = "
 		$stmt -> bind_param("sis", $data[0], $max, $data[1]);
 	} else {
 		//6 cols - record with auto increment primary key
-		echo $data[0] . ' ' . $data[1] . ' ' . $data[2] . ' ' . $data[3] . ' ' . $data[4];
 		$id = NULL;
 		$stmt -> bind_param("isssss", $id, $data[0], $data[1], $data[2], $data[3], $data[4]);
 	}
@@ -127,7 +70,7 @@ function insertIntoTabel($data, $table, $servername = "localhost", $username = "
 	//s -> type string
 	$stmt -> execute();
 
-	printf("%d Row inserted in " . $table . "\n", $stmt -> affected_rows);
+	// printf("%d Row inserted in " . $table . "\n", $stmt -> affected_rows);
 
 	//Destroy the result set and free the memory used for it
 	$stmt -> close();
@@ -250,7 +193,6 @@ function searchRecordFromDB($lan, $content = NULL, $sub_content = NULL, $servern
 		/* fetch associative array */
 		while ($row = $result -> fetch_assoc()) {
 			foreach ($row as $key => $value) {
-				//printf("%s -> %s <br>", $key, $value);
 				array_push($what_to_display, $value);
 			}
 		}
@@ -289,7 +231,7 @@ function updateRecordFromDB($id, $syntax, $example, $servername = "localhost", $
 	//s -> type string
 	$stmt -> execute();
 
-	printf("%d Row updated.\n", $stmt -> affected_rows);
+	// printf("%d Row updated.\n", $stmt -> affected_rows);
 
 	//Destroy the result set and free the memory used for it
 	$stmt -> close();
@@ -315,7 +257,7 @@ function updateDataFromDB($data, $table, $servername = "localhost", $username = 
 	}		
 	$stmt -> execute();
 
-	printf("%d Row updated.\n", $stmt -> affected_rows);
+	// printf("%d Row updated.\n", $stmt -> affected_rows);
 
 	//Destroy the result set and free the memory used for it
 	$stmt -> close();
@@ -338,7 +280,7 @@ function deleteRecordFromDB($id, $servername = "localhost", $username = "xlei", 
 	//s -> type string
 	$stmt -> execute();
 
-	printf("%d Row deleted.\n", $stmt -> affected_rows);
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
 
 	//Destroy the result set and free the memory used for it
 	$stmt -> close();
@@ -359,13 +301,13 @@ function deleteLanFromDB($lan, $servername = "localhost", $username = "xlei", $p
 	$stmt -> bind_param("s", $lan);
 	$stmt -> execute();
 
-	printf("%d Row deleted.\n", $stmt -> affected_rows);
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
 	
 	$stmt = $mysqli -> prepare('DELETE FROM language WHERE name = ?');
 	$stmt -> bind_param("s", $lan);
 	$stmt -> execute();
 
-	printf("%d Row deleted.\n", $stmt -> affected_rows);
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
 
 	//Destroy the result set and free the memory used for it
 	$stmt -> close();
@@ -386,22 +328,50 @@ function deleteContentFromDB($content, $servername = "localhost", $username = "x
 	$stmt -> bind_param("s", $content);
 	$stmt -> execute();
 
-	printf("%d Row deleted.\n", $stmt -> affected_rows);
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
 	
 	//delete sub_content
 	$stmt = $mysqli -> prepare('DELETE FROM sub_content WHERE content_name = ?');
 	$stmt -> bind_param("s", $content);
 	$stmt -> execute();
 
-	printf("%d Row deleted.\n", $stmt -> affected_rows);
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
 	
-	//delete sub_content
+	//delete content
 	$stmt = $mysqli -> prepare('DELETE FROM content WHERE name = ?');
 	$stmt -> bind_param("s", $content);
 	$stmt -> execute();
 
-	printf("%d Row deleted.\n", $stmt -> affected_rows);
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
 
+	//Destroy the result set and free the memory used for it
+	$stmt -> close();
+
+	//Close the connection
+	$mysqli -> close();
+}
+
+function deleteSubContentFromDB($sub_content, $servername = "localhost", $username = "xlei", $password = "P123fTlS9n*", $dbname = "xlei_project"){
+	//Connect to a MySQL server
+	$mysqli = new mysqli($servername, $username, $password, $dbname);
+	if (mysqli_connect_errno()) {
+		printf("Connect failed: %s\n", mysqli_connect_error());
+		        exit;
+	}
+	//delete record 
+	$stmt = $mysqli -> prepare('DELETE FROM record WHERE record.sub_content_name = ?');
+	$stmt -> bind_param("s", $sub_content);
+	$stmt -> execute();
+
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
+	
+	//delete sub_content
+	$stmt = $mysqli -> prepare('DELETE FROM sub_content WHERE name = ?');
+	$stmt -> bind_param("s", $sub_content);
+	$stmt -> execute();
+	
+	// printf("%d Row deleted.\n", $stmt -> affected_rows);
+	
 	//Destroy the result set and free the memory used for it
 	$stmt -> close();
 

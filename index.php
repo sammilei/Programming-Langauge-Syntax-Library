@@ -290,10 +290,6 @@ ini_set('display_errors', '1');
 			}
 
 			emptySelectionWarning($selected_lan, $selected_content);
-			// print_r($selected_content);
-			//debugging
-			// print_r($selected_lan);
-			//debugging
 
 			if ($selected_content != NULL && $selected_lan != NULL) {
 				if ($selected_content[count($selected_content) - 1] == 'all') {
@@ -384,13 +380,9 @@ ini_set('display_errors', '1');
 				<?php
 				if (!isset($_POST['submit'])) {
 					if (isset($_POST['update'])) {
-						$_SESSION['id'] = $_POST['update'];
-						echo '<br>';
 						echo "<br>please refresh the page!!!!!to fix the bug of php<br>";
 						display_tables_of_contents($_SESSION['selected_lan'], $_SESSION['selected_content'], $id = $_POST['update']);
-						//testing
-						header('Location: http://smccs85.com/~xlei/project/index.php');
-						exit();
+						
 					} else if (isset($_POST['delete'])) {
 						$_SESSION['id'] = $_POST['delete'];
 						header("Location:http://smccs85.com/~xlei/project/confirm.php");
@@ -401,9 +393,6 @@ ini_set('display_errors', '1');
 					} else if (isset($_SESSION['confirm'])) {
 						if ($_SESSION['confirm'] == 'yes') {
 							deleteRecordFromDB($_SESSION['id']);
-							// //deleting
-							// echo 'deleted session id ';
-							// print_r($_SESSION['id']);
 							echo '<br>';
 							echo '<script language="javascript">';
 							echo 'alert("Your record is deleted successfully")';

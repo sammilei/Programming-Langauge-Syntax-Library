@@ -14,7 +14,7 @@ ini_set('display_errors', '1');
 			}
 
 			th, td {
-				padding: 8px;
+				padding: 6px;
 				text-align: left;
 				border-bottom: 1px solid #ddd;
 			}
@@ -120,7 +120,7 @@ ini_set('display_errors', '1');
 						echo "</tr>";
 					}
 				}
-				//for adding a "All" option in the end of the displaying
+				//for adding a "adding" option in the end of the displaying
 				if ($i == $end_ind) {
 					echo "<td><input type='text' name='lan_input' value='insert a new Language'>  <button class = 'button' name='add_lan' value = 'lan'>ADD</td>";
 					echo "</tr>";
@@ -158,7 +158,7 @@ ini_set('display_errors', '1');
 							echo "</tr>";
 						}
 					}
-					//for adding a "All" option in the end of the displaying
+					//for adding a "ADD" option in the end of the displaying
 					if ($j == $end_ind) {
 						echo "<td><input type='text' name='content_input' value='insert a new content'>  <button class = 'button' name='add_content' value = 'content'>ADD</td>";
 						echo "</tr>";
@@ -208,31 +208,31 @@ ini_set('display_errors', '1');
 			display_all_contents($all_content);
 			createDeleteButton('content');
 			if ($need_sub) {
-				if(display_sub_content($_POST['content'])){
+				if (display_sub_content($_POST['content'])) {
 					//add record adding section
 					echo "<th><br></th>";
 					displayAddingRecord();
 				}
 				$_SESSION['content'] = $_POST['content'][0];
-				//get sesscion of content
 			}
 		}
 
 		function createDeleteButton($value) {
-			echo "<tr >";
+			echo "<tr>";
 			echo "<th colspan='4' style='text-align: center'>";
 			echo "<button class = 'button' name = 'delete_btn' value = '$value'>
 							Delete
-						</button>";
+						</button> ";
 			if ($value == 'content') {
 				echo " <button class = 'button' name = 'add_btn' value = 'sub_content'>
-							Add SubContent
+							Edit SubContent
 						</button>
 						<button class = 'button' name = 'add_btn' value = 'record'>
 							Add New Record
 						</button>";
 			}
 			echo "</th></tr>";
+			echo "<tr><th colspan='4' style='text-align: center'>Caution: Once 'Delete' is clicked, the records associated to this data will be removed too.NO WARNING.</th></tr>";
 		}
 
 		function sub_content_section() {
@@ -243,6 +243,7 @@ ini_set('display_errors', '1');
 
 			echo "<th><br></th>";
 		}
+
 		/**
 		 * return false is there is no sub content
 		 */
@@ -254,7 +255,7 @@ ini_set('display_errors', '1');
 			$end_ind = count($all_sub_cont) - 1;
 			if ($end_ind == -1) {
 				echo "<tr>";
-				echo "<td><input type='text' name='sub_content_input' value='insert a new sub content'>  <button class = 'button' name='add_sub_content' value = 'lan'>ADD</td>";
+				echo "<td><input type='text' name='sub_content_input' value='insert a new sub content'>  <button class = 'button' name='add_sub_content'>ADD</button></td>";
 				echo "</tr>";
 				return FALSE;
 			}
@@ -271,19 +272,24 @@ ini_set('display_errors', '1');
 				}
 				//for adding a "All" option in the end of the displaying
 				if ($i == $end_ind) {
-					echo "<td><input type='text' name='sub_content_input' value='insert a new sub content'>  <button class = 'button' name='add_sub_content' value = 'lan'>ADD</td>";
+					echo "<td><input type='text' name='sub_content_input' value='insert a new sub content'>  <button class = 'button' name='add_sub_content'>ADD</button></td>";
 					echo "</tr>";
 				}
 			}
 			createDeleteButton('sub_content');
 			return TRUE;
 		}
-		
-		function displayAddingRecord(){
+
+		function displayAddingRecord() {
 			echo "<tr>";
-			echo "<input type='text' name='syntax' value='insert syntax'> <input type='text' name='example' value='insert examples'> 
-			<button class = 'button' name='add_record' value = 'record'>ADD</td>";
+			echo "</tr><th colspan='4' style='text-align: center'>New Record</th><tr>";
+			echo "<th colspan='4' style='text-align: center'><input type='text' name='syntax' value='insert syntax'> <input type='text' name='example' value='insert examples'>  
+			<button class = 'button' name='add_record' value = 'record'>ADD</button> <button class = 'button' name='cancel' value = 'cancel'>CANCEL</button> </th>";
 			echo "</tr>";
+		}
+
+		function confirmDeleting() {
+
 		}
 		?>
 		<div class = 'title'>
@@ -318,10 +324,12 @@ ini_set('display_errors', '1');
 									warning('alert("Hmm..You didn\'t select any language to delete")');
 								}
 							} else if ($_POST['delete_btn'] == 'sub_content') {
-								/**
-								 * not done!!!!!
-								 */
-
+								//deleting sub content
+								if (isset($_POST['sub_content'])) {
+									deleteSubContentFromDB($_POST['sub_content'][0]);
+								} else {
+									warning('alert("Hmm..You didn\'t select any sub content to delete")');
+								}
 							} else {
 								//deleting content
 								if (isset($_POST['content'])) {
@@ -348,20 +356,20 @@ ini_set('display_errors', '1');
 								insertIntoTabel($data, 'sub_content');
 							}
 
-						} else if (isset($_POST['add_record'])){
-							if (!isset($_POST['lan'])){
+						} else if (isset($_POST['add_record'])) {
+							if (!isset($_POST['lan'])) {
 								warning('alert("Hmm.. Tell me the language")');
-							}else if($_POST['syntax']== ''){
+							} else if ($_POST['syntax'] == '') {
 								warning('alert("Hmm.. synstax, please~~")');
-							}else if($_POST['sub_content']== NULL){
+							} else if ($_POST['sub_content'] == NULL) {
 								warning('alert("Hmm.. Select a sub content")');
-							}else{
+							} else {
 								$data = [];
-								$data[2]="Sammi";
+								$data[2] = "Sammi";
 								$data[0] = $_POST['syntax'];
-								if($_POST['example'] == ''){
+								if ($_POST['example'] == '') {
 									$data[1] = NULL;
-								}else{
+								} else {
 									$data[1] = $_POST['example'];
 								}
 								$data[3] = $_POST['lan'][0];
